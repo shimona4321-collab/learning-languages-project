@@ -1,0 +1,20 @@
+# environments / IDE
+venv/
+.venv/
+.idea/
+.vscode/
+
+# python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+app/.pytest_cache/
+
+# runtime state
+langmatch_state.json
+language_matcher_state.json
+
+# plots (optional)
+app/plots/*.png
+app/plots/*.pdf
