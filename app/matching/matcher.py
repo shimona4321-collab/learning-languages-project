@@ -3,6 +3,7 @@ Matching algorithm for the Language Exchange Matchmaking System.
 """
 
 from __future__ import annotations
+import os
 
 from typing import List, Tuple, TYPE_CHECKING
 
@@ -20,6 +21,22 @@ except ImportError:
 
 from .cooldown import pair_key, decay_cooldowns_toward_one
 from .scoring import build_edge_weights_for_pool
+
+# -------------------------
+# Verbose / logging control
+# -------------------------
+# Some demos/experiments are run in notebooks (e.g., Colab). In that setting we want to avoid
+# large per-round console output. Set env LANGMATCH_VERBOSE=0 to silence internal prints.
+_MATCHER_VERBOSE = os.environ.get("LANGMATCH_VERBOSE", "1") not in ("0", "false", "False", "")
+
+def set_matcher_verbose(verbose: bool) -> None:
+    """Enable/disable verbose internal prints for the matching loop."""
+    global _MATCHER_VERBOSE
+    _MATCHER_VERBOSE = bool(verbose)
+
+def _vprint(*args, **kwargs):
+    if _MATCHER_VERBOSE:
+        _vprint(*args, **kwargs)
 
 # Optional SciPy Hungarian algorithm
 try:
@@ -84,7 +101,7 @@ def run_matching_round(state: "AppState") -> None:
     reconcile_state(state)
 
     if not state.users:
-        print("No users in the system.")
+        _vprint("No users in the system.")
         return
 
     state.round_index += 1
@@ -119,12 +136,12 @@ def run_matching_round(state: "AppState") -> None:
     eligible_set = set(eligible_left_ids) | set(eligible_right_ids)
 
     if not eligible_set:
-        print("No eligible users in the matching pool (non-matched, correct language configs).")
+        _vprint("No eligible users in the matching pool (non-matched, correct language configs).")
         decay_cooldowns_toward_one(state)
         return
 
     if not eligible_left_ids or not eligible_right_ids:
-        print("Cannot run matching: one side has no eligible users.")
+        _vprint("Cannot run matching: one side has no eligible users.")
         for uid, u in state.users.items():
             if u.status == "matched":
                 u.waiting_rounds_without_offer = 0
@@ -211,8 +228,8 @@ def run_matching_round(state: "AppState") -> None:
     decay_cooldowns_toward_one(state)
 
     if not created_pairs:
-        print("No proposals created this round (no positive-weight pairs selected).")
+        _vprint("No proposals created this round (no positive-weight pairs selected).")
     else:
-        print("Proposed pairs in this matching round:")
+        _vprint("Proposed pairs in this matching round:")
         for he_id, en_id, w in sorted(created_pairs, key=lambda t: t[2], reverse=True):
-            print(f"  {he_id} ({LANG_HE}) <--> {en_id} ({LANG_EN}) | score = {w:.3f}")
+            _vprint(f"  {he_id} ({LANG_HE}) <--> {en_id} ({LANG_EN}) | score = {w:.3f}")

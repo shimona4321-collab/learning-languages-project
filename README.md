@@ -1,64 +1,47 @@
-# Learning Languages Project – Language Exchange Matchmaking
+# Language Exchange Matchmaking System
 
-This repo contains a small **language-exchange matchmaking system** (demo) and **experiment scripts**.
+This project matches language-exchange partners using:
+- **Weighted scoring** over language / availability / shared topics
+- **Contextual bandits (LinUCB)** for exploration vs exploitation
+- **Fairness / diversity boosting** (to avoid repeatedly offering the same strong users)
 
-The easiest way for a reviewer/TA to run everything is via the **Google Colab notebook**.
+## Option A (recommended for the course staff): Run everything in Colab (automated demo + experiments)
 
----
+1. Open the notebook:
+   - `Language_Exchange_Matching_Colab.ipynb` (from this repo)
 
-## Option A (recommended): Run in Google Colab
+2. In Colab:
+   - `Runtime` → `Run all`
 
-1) Open the notebook in Colab:
+What you get when you run-all:
+- A **small non-interactive demo** (creates a few synthetic users and runs a matching round)
+- **Experiments + graphs** (bandit vs baselines, exploration on/off, fairness effect)
+- No manual inputs are required in run-all.
 
-- https://colab.research.google.com/github/shimona4321-collab/learning-languages-project/blob/main/Language_Exchange_Matching_Colab.ipynb
+> Tip: If Colab is slow/stuck, use `Runtime → Restart runtime` and then `Runtime → Run all`.
 
-2) In Colab, click **Runtime → Run all**.
+## Option B: Interactive demo (optional)
 
-3) What the notebook runs:
+The notebook also includes an **optional interactive demo** (add/remove users, run rounds, accept/reject offers).
+This is **disabled by default** so that `Run all` never gets stuck waiting for input.
 
-- **Setup**: clones this repo into Colab and imports the code.
-- **Interactive demo**: shows how to add/remove users, run matching rounds, and accept/reject proposals.
-- **Experiments**: runs the experiment blocks and outputs the graphs.
+To enable it:
+1. Find the cell titled **“OPTIONAL: Interactive Demo (Admin/User)”**
+2. Set `RUN_INTERACTIVE = True`
+3. Run that cell (it will start asking for inputs)
 
-Notes:
-- The cell **"Visualize Matching Graph"** is optional and is **disabled by default** to avoid freezing on large graphs.
-- If something gets stuck in Colab: use **Runtime → Restart runtime**, then run again.
+## Local run (optional)
 
----
-
-## How to use the demo inside the notebook
-
-Inside the notebook you can:
-
-- **Add users** using the helper `register_user(...)`.
-- **Run a round** using `lm.run_matching_round(state)`.
-- **View current proposals** in the "View Proposals" cell.
-- **Accept / Reject** using `lm.handle_proposal_response(state, proposal_id, accept=True/False)`.
-
-The notebook includes ready-made cells that demonstrate these actions.
-
----
-
-## Option B: Run locally (optional)
-
-Requirements:
-- Python 3.10+
-- numpy, matplotlib
-
-Run the interactive CLI demo:
+If you want to run locally (not required for the staff):
 
 ```bash
-python -m app.main
+pip install -r requirements.txt
+python -m app.main               # interactive Admin/User menu
+python -m app.checking_langmatc  # experiments + graphs
 ```
 
-Run experiments (graphs saved under `app/plots/`):
+## Repository contents
 
-```bash
-python -m app.checking_langmatc
-```
-
----
-
-## Repository link
-
-- https://github.com/shimona4321-collab/learning-languages-project
+- `Language_Exchange_Matching_Colab.ipynb` — the Colab notebook (Option A + Option B)
+- `app/` — the project code (matching, bandit, simulation, UI)
+- `requirements.txt` — dependencies

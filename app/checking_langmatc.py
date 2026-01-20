@@ -693,7 +693,7 @@ def run_experiment_2(short: bool) -> None:
 
             return novelty_rate_per_round
 
-    novelty_off = run_case("Exploration OFF (alpha≈0)", alpha_personal=0.001, alpha_global=0.001)
+    novelty_off = run_case("Exploration OFF (alpha≈0)", alpha_personal = 0.0, alpha_global = 0.0)
     novelty_on = run_case("Exploration ON (current alphas)", alpha_personal=orig_alpha_p, alpha_global=orig_alpha_g)
 
     plot_lines_smoothed(
@@ -701,7 +701,7 @@ def run_experiment_2(short: bool) -> None:
         x=x_rounds,
         series=[novelty_off, novelty_on],
         labels=[
-            "Exploration OFF (ALPHA≈0)",
+            "Exploration OFF (alpha=0)",
             f"Exploration ON (ALPHA={orig_alpha_p:g})",
         ],
         ylabel="Novelty Rate (0..1)",
