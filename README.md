@@ -5,7 +5,7 @@ This project matches language-exchange partners using:
 - **Contextual bandits (LinUCB)** for exploration vs exploitation
 - **Fairness / diversity boosting** (to avoid repeatedly offering the same strong users)
 
-## Option A (recommended for the course staff): Run everything in Colab (automated demo + experiments)
+## Option A : Run everything in Colab (automated demo + experiments)
 
 1. Open the notebook:
    - `Language_Exchange_Matching_Colab.ipynb` (from this repo)
@@ -30,15 +30,6 @@ To enable it:
 2. Set `RUN_INTERACTIVE = True`
 3. Run that cell (it will start asking for inputs)
 
-## Local run (optional)
-
-If you want to run locally (not required for the staff):
-
-```bash
-pip install -r requirements.txt
-python -m app.main               # interactive Admin/User menu
-python -m app.checking_langmatc  # experiments + graphs
-```
 
 ## Repository contents
 
