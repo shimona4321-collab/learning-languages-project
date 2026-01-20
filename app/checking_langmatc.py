@@ -48,6 +48,9 @@ for p in (str(_THIS_DIR), str(_PARENT_DIR)):
 
 # Create plots directory at initialization
 import os
+# By default keep experiment runs quiet (disable per-round prints from matcher).
+# You can override by setting LANGMATCH_VERBOSE=1 before running.
+os.environ.setdefault('LANGMATCH_VERBOSE', '0')
 _PLOTS_DIR = _THIS_DIR / "plots"
 if not _PLOTS_DIR.exists():
     _PLOTS_DIR.mkdir(parents=True, exist_ok=True)
