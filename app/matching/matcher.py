@@ -35,8 +35,10 @@ def set_matcher_verbose(verbose: bool) -> None:
     _MATCHER_VERBOSE = bool(verbose)
 
 def _vprint(*args, **kwargs):
+    """Verbose print controlled by LANGMATCH_VERBOSE or set_matcher_verbose()."""
     if _MATCHER_VERBOSE:
-        _vprint(*args, **kwargs)
+        import builtins
+        builtins.print(*args, **kwargs)
 
 # Optional SciPy Hungarian algorithm
 try:
