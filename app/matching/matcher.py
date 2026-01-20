@@ -3,12 +3,12 @@ Matching algorithm for the Language Exchange Matchmaking System.
 """
 
 from __future__ import annotations
-import os
 
 from typing import List, Tuple, TYPE_CHECKING
 
 import numpy as np
 import networkx as nx
+import os
 
 try:
     from ..config import LANG_HE, LANG_EN
@@ -22,11 +22,25 @@ except ImportError:
 from .cooldown import pair_key, decay_cooldowns_toward_one
 from .scoring import build_edge_weights_for_pool
 
+# Optional SciPy Hungarian algorithm
+try:
+    from scipy.optimize import linear_sum_assignment
+    SCIPY_AVAILABLE = True
+except Exception:
+    linear_sum_assignment = None
+    SCIPY_AVAILABLE = False
+
+if TYPE_CHECKING:
+    from ..models.state import AppState
+
+
+
 # -------------------------
 # Verbose / logging control
 # -------------------------
-# Some demos/experiments are run in notebooks (e.g., Colab). In that setting we want to avoid
-# large per-round console output. Set env LANGMATCH_VERBOSE=0 to silence internal prints.
+# Colab notebooks may run many rounds/experiments; to avoid huge output, you can set:
+#   os.environ["LANGMATCH_VERBOSE"] = "0"
+# or call: set_matcher_verbose(False)
 _MATCHER_VERBOSE = os.environ.get("LANGMATCH_VERBOSE", "1") not in ("0", "false", "False", "")
 
 def set_matcher_verbose(verbose: bool) -> None:
@@ -39,17 +53,6 @@ def _vprint(*args, **kwargs):
     if _MATCHER_VERBOSE:
         import builtins
         builtins.print(*args, **kwargs)
-
-# Optional SciPy Hungarian algorithm
-try:
-    from scipy.optimize import linear_sum_assignment
-    SCIPY_AVAILABLE = True
-except Exception:
-    linear_sum_assignment = None
-    SCIPY_AVAILABLE = False
-
-if TYPE_CHECKING:
-    from ..models.state import AppState
 
 
 def _hungarian_max_weight_subset(W: np.ndarray) -> List[Tuple[int, int]]:
