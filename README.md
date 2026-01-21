@@ -1,47 +1,71 @@
-# Language Exchange Matchmaking System
+# Learning Languages Project – Language-Exchange Matchmaking
 
-This project matches language-exchange partners using:
-- **Weighted scoring** over language / availability / shared topics
-- **Contextual bandits (LinUCB)** for exploration vs exploitation
-- **Fairness / diversity boosting** (to avoid repeatedly offering the same strong users)
+This repository contains a small end-to-end system for matching Hebrew ↔ English conversation partners.
 
-## Option A (recommended for the course staff): Run everything in Colab (automated demo + experiments)
+**Course submission entrypoint:**
+- `Language_Exchange_Matching_Colab.ipynb` (runs in Google Colab)
 
-1. Open the notebook:
-   - `Language_Exchange_Matching_Colab.ipynb` (from this repo)
+---
 
-2. In Colab:
-   - `Runtime` → `Run all`
+## Option A: Run everything in Colab (recommended)
 
-What you get when you run-all:
-- A **small non-interactive demo** (creates a few synthetic users and runs a matching round)
-- **Experiments + graphs** (bandit vs baselines, exploration on/off, fairness effect)
-- No manual inputs are required in run-all.
+1) Open the notebook in Colab:
 
-> Tip: If Colab is slow/stuck, use `Runtime → Restart runtime` and then `Runtime → Run all`.
+`https://colab.research.google.com/github/shimona4321-collab/learning-languages-project/blob/main/Language_Exchange_Matching_Colab.ipynb`
 
-## Option B: Interactive demo (optional)
+2) In Colab click: **Runtime → Run all**.
 
-The notebook also includes an **optional interactive demo** (add/remove users, run rounds, accept/reject offers).
-This is **disabled by default** so that `Run all` never gets stuck waiting for input.
+Running all cells will execute:
+- A short non-interactive demo (few users)
+- Experiments that produce the result plots
 
-To enable it:
-1. Find the cell titled **“OPTIONAL: Interactive Demo (Admin/User)”**
-2. Set `RUN_INTERACTIVE = True`
-3. Run that cell (it will start asking for inputs)
+### Notes
+- The notebook is **quiet by default** (no per-round logs).
+- If you want to see internal per-round logs, set in the setup cell:
+  `os.environ["LANGMATCH_VERBOSE"] = "1"`
+
+---
+
+## Option B: Interactive demo inside the notebook (optional)
+
+The notebook also includes an **interactive** section.
+
+- Find the section named **Interactive notebook demo**.
+- Set:
+  `RUN_INTERACTIVE_DEMO = True`
+- Run only that section’s cells (do *not* use “Run all”).
+
+In interactive mode you can:
+- Add a user
+- Remove a user
+- View current users
+- Run a matching round and inspect proposals
+
+---
 
 ## Local run (optional)
 
-If you want to run locally (not required for the staff):
+1) Install dependencies:
 
 ```bash
 pip install -r requirements.txt
-python -m app.main               # interactive Admin/User menu
-python -m app.checking_langmatc  # experiments + graphs
 ```
 
-## Repository contents
+2) Run the interactive CLI:
 
-- `Language_Exchange_Matching_Colab.ipynb` — the Colab notebook (Option A + Option B)
-- `app/` — the project code (matching, bandit, simulation, UI)
-- `requirements.txt` — dependencies
+```bash
+python -m app.main
+```
+
+3) Run the experiments script:
+
+```bash
+python -m app.checking_langmatc
+```
+
+You can keep experiments quiet by setting:
+
+```bash
+set LANGMATCH_VERBOSE=0
+```
+(on Windows PowerShell use `$env:LANGMATCH_VERBOSE="0"`).

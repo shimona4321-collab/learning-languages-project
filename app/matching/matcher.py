@@ -3,9 +3,11 @@ Matching algorithm for the Language Exchange Matchmaking System.
 """
 
 from __future__ import annotations
-import os
 
 from typing import List, Tuple, TYPE_CHECKING
+
+import builtins
+import os
 
 import numpy as np
 import networkx as nx
@@ -22,24 +24,6 @@ except ImportError:
 from .cooldown import pair_key, decay_cooldowns_toward_one
 from .scoring import build_edge_weights_for_pool
 
-# -------------------------
-# Verbose / logging control
-# -------------------------
-# Some demos/experiments are run in notebooks (e.g., Colab). In that setting we want to avoid
-# large per-round console output. Set env LANGMATCH_VERBOSE=0 to silence internal prints.
-_MATCHER_VERBOSE = os.environ.get("LANGMATCH_VERBOSE", "1") not in ("0", "false", "False", "")
-
-def set_matcher_verbose(verbose: bool) -> None:
-    """Enable/disable verbose internal prints for the matching loop."""
-    global _MATCHER_VERBOSE
-    _MATCHER_VERBOSE = bool(verbose)
-
-def _vprint(*args, **kwargs):
-    """Verbose print controlled by LANGMATCH_VERBOSE or set_matcher_verbose()."""
-    if _MATCHER_VERBOSE:
-        import builtins
-        builtins.print(*args, **kwargs)
-
 # Optional SciPy Hungarian algorithm
 try:
     from scipy.optimize import linear_sum_assignment
@@ -50,6 +34,25 @@ except Exception:
 
 if TYPE_CHECKING:
     from ..models.state import AppState
+
+
+# ------------------------------
+# Verbosity control
+# ------------------------------
+# Default is verbose unless disabled via environment variable LANGMATCH_VERBOSE=0.
+_MATCHER_VERBOSE = os.environ.get('LANGMATCH_VERBOSE', '1').strip().lower() not in ('0','false','no','off')
+
+
+def set_matcher_verbose(flag: bool) -> None:
+    """Enable/disable internal matcher prints (useful in notebooks/experiments)."""
+    global _MATCHER_VERBOSE
+    _MATCHER_VERBOSE = bool(flag)
+
+
+def _vprint(*args, **kwargs) -> None:
+    """Verbose print that won't spam output when verbosity is disabled."""
+    if _MATCHER_VERBOSE:
+        builtins.print(*args, **kwargs)
 
 
 def _hungarian_max_weight_subset(W: np.ndarray) -> List[Tuple[int, int]]:
