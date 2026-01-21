@@ -6,11 +6,9 @@ from __future__ import annotations
 
 from typing import List, Tuple, TYPE_CHECKING
 
-import builtins
-import os
-
 import numpy as np
 import networkx as nx
+import os
 
 try:
     from ..config import LANG_HE, LANG_EN
@@ -36,22 +34,24 @@ if TYPE_CHECKING:
     from ..models.state import AppState
 
 
-# ------------------------------
-# Verbosity control
-# ------------------------------
-# Default is verbose unless disabled via environment variable LANGMATCH_VERBOSE=0.
-_MATCHER_VERBOSE = os.environ.get('LANGMATCH_VERBOSE', '1').strip().lower() not in ('0','false','no','off')
 
+# -------------------------
+# Verbose / logging control
+# -------------------------
+# Colab notebooks may run many rounds/experiments; to avoid huge output, you can set:
+#   os.environ["LANGMATCH_VERBOSE"] = "0"
+# or call: set_matcher_verbose(False)
+_MATCHER_VERBOSE = os.environ.get("LANGMATCH_VERBOSE", "1") not in ("0", "false", "False", "")
 
-def set_matcher_verbose(flag: bool) -> None:
-    """Enable/disable internal matcher prints (useful in notebooks/experiments)."""
+def set_matcher_verbose(verbose: bool) -> None:
+    """Enable/disable verbose internal prints for the matching loop."""
     global _MATCHER_VERBOSE
-    _MATCHER_VERBOSE = bool(flag)
+    _MATCHER_VERBOSE = bool(verbose)
 
-
-def _vprint(*args, **kwargs) -> None:
-    """Verbose print that won't spam output when verbosity is disabled."""
+def _vprint(*args, **kwargs):
+    """Verbose print controlled by LANGMATCH_VERBOSE or set_matcher_verbose()."""
     if _MATCHER_VERBOSE:
+        import builtins
         builtins.print(*args, **kwargs)
 
 
